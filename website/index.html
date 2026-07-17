@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Emotion AI Buddy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;--bg2:#12151c;--surface:#1a1d26;--surface2:#20242f;
+  --border:#2a2e3d;--border2:#323647;
+  --text:#e8eaf0;--text2:#9ea3b5;--text3:#636880;
+  --gold:#c9a84c;--gold2:#e8c96a;
+}
+html{scroll-behavior:smooth}
+body{min-height:100vh;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;z-index:2000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center}
+#splash.out{animation:spFade .8s ease forwards;pointer-events:none}
+@keyframes spFade{to{opacity:0}}
+.sp-row{display:flex;gap:44px;margin-bottom:52px;align-items:flex-end}
+.spe{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transform:translateY(50px) scale(.55);filter:blur(8px)}
+.spe.p{animation:ePop .58s cubic-bezier(.34,1.56,.64,1) forwards}
+.spe.b{animation:eBob 3.4s ease-in-out infinite}
+@keyframes ePop{to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes eBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.spe-icon{font-size:2.8rem;line-height:1}
+.spe-label{font-size:.55rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}
+.sp-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:800;color:var(--text);letter-spacing:-.4px;opacity:0;animation:fadeUp .7s ease 1.4s forwards;text-align:center}
+.sp-title span{color:var(--gold)}
+.sp-sub{font-size:.88rem;color:var(--text3);margin-top:10px;opacity:0;animation:fadeUp .6s ease 1.9s forwards}
+.sp-prog{margin-top:44px;width:200px;height:1px;background:var(--border2);border-radius:999px;overflow:hidden;opacity:0;animation:fadeIn .4s ease 2.3s forwards}
+.sp-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:bFill 1.4s ease 2.4s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes bFill{to{width:100%}}
+
+/* ── WIPE ── */
+#wipe{position:fixed;inset:0;z-index:1500;background:var(--surface);transform:scaleY(0);transform-origin:bottom;pointer-events:none}
+#wipe.out{animation:wOut .45s cubic-bezier(.7,0,.3,1) forwards}
+#wipe.in {animation:wIn  .45s cubic-bezier(.7,0,.3,1) forwards}
+@keyframes wOut{to{transform:scaleY(1)}}
+@keyframes wIn{from{transform:scaleY(1);transform-origin:top}to{transform:scaleY(0);transform-origin:top}}
+#app{opacity:0}
+#app.show{animation:appIn .6s ease forwards}
+@keyframes appIn{to{opacity:1}}
+
+/* ── CANVAS ── */
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(13,15,20,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer;color:var(--text);text-decoration:none}
+.logo-mark{width:34px;height:34px;border-radius:9px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo-name{font-size:.95rem;font-weight:700;letter-spacing:-.2px}
+.logo-name span{color:var(--gold)}
+.nav-links{display:flex;gap:2px}
+.nl{font-size:.82rem;font-weight:500;color:var(--text2);padding:7px 16px;border-radius:8px;transition:color .2s,background .2s;cursor:pointer;border:none;background:none}
+.nl:hover{color:var(--text);background:var(--surface2)}
+.nl.active{color:var(--text);background:var(--surface2)}
+.nav-cta{background:var(--gold);color:var(--bg);padding:8px 20px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;border:none;transition:background .2s,transform .15s;margin-left:8px}
+.nav-cta:hover{background:var(--gold2);transform:translateY(-1px)}
+
+/* ── MAIN ── */
+main{position:relative;z-index:1}
+
+/* ── HERO — two column ── */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:80px 6% 60px;
+  max-width:1260px;margin:0 auto;
+  gap:60px;
+}
+.hero-left{flex:1;animation:fadeUp .9s cubic-bezier(.16,1,.3,1) .3s both;text-align:center;display:flex;flex-direction:column;align-items:center}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:6px;padding:5px 14px;
+  font-size:.72rem;font-weight:700;color:var(--text3);letter-spacing:.09em;
+  text-transform:uppercase;margin-bottom:24px;
+}
+.kicker-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold);animation:kdot 2s infinite}
+@keyframes kdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero-left h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,4.5vw,4rem);
+  font-weight:800;line-height:1.07;letter-spacing:-.5px;
+  margin-bottom:20px;
+}
+.hero-left h1 em{font-style:italic;color:var(--gold)}
+.hero-left h1 .tw-wrap{border-bottom:2px solid var(--gold);padding-bottom:2px}
+.hero-left p{font-size:1rem;color:var(--text2);line-height:1.8;margin-bottom:36px;max-width:520px;text-align:center}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--bg);font-weight:700;font-size:.9rem;padding:13px 28px;border-radius:9px;text-decoration:none;border:none;cursor:pointer;transition:background .2s,transform .2s;box-shadow:0 4px 18px rgba(201,168,76,.25)}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-2px)}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text);font-weight:600;font-size:.9rem;padding:13px 28px;border-radius:9px;text-decoration:none;border:1px solid var(--border2);cursor:pointer;transition:background .2s,transform .2s}
+.btn-outline:hover{background:var(--surface2);transform:translateY(-2px)}
+
+/* ── 3D ORBIT (right side) ── */
+.hero-right{
+  flex:1;display:flex;justify-content:center;align-items:center;
+  position:relative;height:500px;
+  animation:fadeUp .9s cubic-bezier(.16,1,.3,1) .55s both;
+}
+
+/* ── WHEEL ── */
+.wheel-wrap{
+  position:relative;
+  width:380px;height:380px;
+  flex-shrink:0;
+}
+.wheel-center{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;pointer-events:none;z-index:2;
+}
+.wc-tag{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3)}
+.wc-emoji{font-size:2.6rem;line-height:1;transition:all .4s cubic-bezier(.34,1.56,.64,1)}
+.wc-name{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--text);transition:all .4s ease}
+
+/* orbit rings */
+.wheel-ring{
+  position:absolute;inset:24px;border-radius:50%;
+  border:1px solid var(--border);
+}
+.wheel-ring2{
+  position:absolute;inset:56px;border-radius:50%;
+  border:1px dashed var(--surface2);
+}
+
+/* spinning container */
+.wheel-orbit{
+  position:absolute;inset:0;
+  animation:wSpin 18s linear infinite;
+}
+.wheel-orbit:hover{animation-play-state:paused}
+@keyframes wSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* each item sits on the rim */
+.wi{
+  position:absolute;
+  top:50%;left:50%;
+  width:66px;height:66px;
+  margin:-33px 0 0 -33px;
+}
+.wi-inner{
+  width:100%;height:100%;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  cursor:pointer;
+  transition:background .2s,border-color .2s,transform .2s;
+  /* counter-rotate so emoji stays upright */
+  animation:wCounterSpin 18s linear infinite;
+}
+.wheel-orbit:hover .wi-inner{animation-play-state:paused}
+@keyframes wCounterSpin{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+.wi-inner:hover{background:var(--surface);border-color:var(--gold);transform:scale(1.12) rotate(0deg) !important}
+.wi-icon{font-size:1.5rem;line-height:1}
+.wi-name{font-size:.48rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+
+/* ── STATS ── */
+.stats-band{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2)}
+.stats-inner{max-width:860px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+.stat{background:var(--bg2);padding:28px 20px;text-align:center}
+.stat-n{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:800;color:var(--gold);letter-spacing:-1px;line-height:1}
+.stat-l{font-size:.68rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin-top:7px}
+
+/* ── SECTION ── */
+.section{padding:5rem 6%;max-width:1260px;margin:0 auto}
+.sec-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.7rem}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;letter-spacing:-.4px;margin-bottom:.8rem;line-height:1.15}
+.sec-sub{font-size:.92rem;color:var(--text2);max-width:500px;line-height:1.75}
+
+/* ── MODEL CARDS ── */
+.model-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:2px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:2.5rem}
+.mc{background:var(--surface);padding:2.6rem 2.2rem;text-decoration:none;color:inherit;display:flex;flex-direction:column;cursor:pointer;transition:background .25s;position:relative;overflow:hidden}
+.mc:hover{background:var(--surface2)}
+.mc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.04),transparent);opacity:0;transition:opacity .3s}
+.mc:hover::before{opacity:1}
+.mc-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:800;color:var(--border2);line-height:1;margin-bottom:1.2rem;transition:color .3s}
+.mc:hover .mc-num{color:var(--gold)}
+.mc-type{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:.6rem}
+.mc-title{font-size:1.2rem;font-weight:700;margin-bottom:.8rem}
+.mc-desc{font-size:.85rem;color:var(--text2);line-height:1.75;margin-bottom:1.4rem;flex:1}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.4rem}
+.pill{font-size:.62rem;font-weight:600;padding:4px 10px;border-radius:4px;background:var(--surface2);border:1px solid var(--border2);color:var(--text3)}
+.mc-link{display:inline-flex;align-items:center;gap:8px;font-size:.82rem;font-weight:700;color:var(--gold);transition:gap .2s}
+.mc:hover .mc-link{gap:13px}
+
+/* ── STEPS ── */
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:2.5rem}
+.step{background:var(--surface);padding:1.8rem 1.6rem;transition:background .25s}
+.step:hover{background:var(--surface2)}
+.step-n{font-size:.6rem;font-weight:700;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:.8rem}
+.step-icon{width:32px;height:32px;margin-bottom:.9rem;display:block;color:var(--gold)}
+.step h4{font-size:.9rem;font-weight:700;margin-bottom:.4rem}
+.step p{font-size:.78rem;color:var(--text3);line-height:1.65}
+code{background:var(--surface2);color:var(--gold);padding:1px 6px;border-radius:4px;font-size:.8em;border:1px solid var(--border2)}
+
+/* ── FOOTER ── */
+.site-footer{border-top:1px solid var(--border);padding:1.8rem 6%;text-align:center;font-size:.73rem;color:var(--text3);letter-spacing:.06em}
+
+/* ── SCROLL REVEAL ── */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1)}
+.rv.on{opacity:1;transform:none}
+
+@media(max-width:900px){
+  .hero{flex-direction:column;padding-top:7rem;gap:3rem;text-align:center}
+  .hero-left{align-items:center}
+  .hero-btns{justify-content:center}
+  .hero-right{width:100%}
+  nav{padding:0 20px}
+  .nav-links,.nav-cta{display:none}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-row">
+    <div class="spe"><span class="spe-icon">😠</span><span class="spe-label">Anger</span></div>
+    <div class="spe"><span class="spe-icon">😨</span><span class="spe-label">Fear</span></div>
+    <div class="spe" style="margin-bottom:14px"><span class="spe-icon" style="font-size:3.4rem">😄</span><span class="spe-label">Joy</span></div>
+    <div class="spe"><span class="spe-icon">😢</span><span class="spe-label">Sadness</span></div>
+    <div class="spe"><span class="spe-icon">😲</span><span class="spe-label">Surprise</span></div>
+  </div>
+  <div class="sp-title">Emotion AI <span>Buddy</span></div>
+  <div class="sp-sub">Context-aware emotion intelligence · Two models · Real time</div>
+  <div class="sp-prog"><div class="sp-fill"></div></div>
+</div>
+
+<div id="wipe"></div>
+<canvas id="cv"></canvas>
+
+<div id="app">
+
+<nav>
+  <div class="logo" onclick="goto('http://127.0.0.1:5000/')">
+    <div class="logo-mark">🧠</div>
+    <span class="logo-name">Emotion <span>AI</span> Buddy</span>
+  </div>
+  <div class="nav-links">
+    <span class="nl active" onclick="goto('http://127.0.0.1:5000/')">Home</span>
+    <span class="nl" onclick="goto('http://127.0.0.1:5000/facial.html')">Facial Detection</span>
+    <span class="nl" onclick="goto('http://127.0.0.1:5000/text.html')">Text Detection</span>
+    <span class="nl" onclick="goto('http://127.0.0.1:5000/history.html')">History</span>
+  </div>
+  <button class="nav-cta" onclick="goto('http://127.0.0.1:5000/facial.html')">Try Now →</button>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+
+  <!-- LEFT: text -->
+  <div class="hero-left">
+    <div class="hero-kicker"><span class="kicker-dot"></span>Real-time AI · Two Models · Local</div>
+    <h1>Detect emotions<br/>humans <em><span class="tw-wrap" id="tw">feel</span></em></h1>
+    <p>Professional emotion recognition from live facial expressions and natural language — two powerful models, one seamless platform, running entirely on your machine.</p>
+    <div class="hero-btns">
+      <button class="btn-gold" onclick="goto('http://127.0.0.1:5000/facial.html')">🎭 Facial Detection</button>
+      <button class="btn-outline" onclick="goto('http://127.0.0.1:5000/text.html')">💬 Text Detection</button>
+    </div>
+  </div>
+
+  <!-- RIGHT: revolving wheel -->
+  <div class="hero-right">
+    <div class="wheel-wrap" id="wheelWrap">
+      <div class="wheel-ring"></div>
+      <div class="wheel-ring2"></div>
+      <div class="wheel-center">
+        <span class="wc-tag">Detecting</span>
+        <span class="wc-emoji" id="wcEmoji">😄</span>
+        <span class="wc-name" id="wcName">Happy</span>
+      </div>
+      <div class="wheel-orbit" id="wheelOrbit"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- STATS -->
+<div class="stats-band rv">
+  <div class="stats-inner">
+    <div class="stat"><div class="stat-n" data-t="7">0</div><div class="stat-l">Facial Emotions</div></div>
+    <div class="stat"><div class="stat-n" data-t="8">0</div><div class="stat-l">Text Emotions</div></div>
+    <div class="stat"><div class="stat-n" data-t="30">0</div><div class="stat-l">FPS Live Feed</div></div>
+    <div class="stat"><div class="stat-n" data-t="2">0</div><div class="stat-l">AI Models</div></div>
+  </div>
+</div>
+
+<!-- MODELS -->
+<div class="section rv">
+  <div class="sec-eyebrow">Technology</div>
+  <div class="sec-title">Two models. One platform.</div>
+  <div class="sec-sub">Choose real-time facial analysis or text-based emotion classification — both running locally.</div>
+  <div class="model-grid">
+    <div class="mc" onclick="goto('http://127.0.0.1:5000/facial.html')">
+      <div class="mc-num">01</div>
+      <svg style="width:32px;height:32px;color:var(--gold);margin-bottom:1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7 16 12 23 17V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+      <div class="mc-type">Computer Vision</div>
+      <div class="mc-title">Facial Emotion Detection</div>
+      <div class="mc-desc">Real-time webcam feed processed through a deep CNN. Detects faces and classifies them into 7 emotion categories at up to 30fps.</div>
+      <div class="pills"><span class="pill">OpenCV</span><span class="pill">Keras</span><span class="pill">CNN</span><span class="pill">30 FPS</span></div>
+      <span class="mc-link">Open model →</span>
+    </div>
+    <div class="mc" onclick="goto('http://127.0.0.1:5000/text.html')">
+      <div class="mc-num">02</div>
+      <svg style="width:32px;height:32px;color:var(--gold);margin-bottom:1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <div class="mc-type">Natural Language Processing</div>
+      <div class="mc-title">Text Emotion Detection</div>
+      <div class="mc-desc">Paste any sentence or paragraph and receive emotion predictions with a full probability breakdown across 8 emotion categories.</div>
+      <div class="pills"><span class="pill">scikit-learn</span><span class="pill">NLP</span><span class="pill">LogReg</span><span class="pill">8 Classes</span></div>
+      <span class="mc-link">Open model →</span>
+    </div>
+  </div>
+</div>
+
+<!-- STEPS -->
+<div class="section rv" style="padding-top:0">
+  <div class="sec-eyebrow">Workflow</div>
+  <div class="sec-title">Up and running in seconds.</div>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-n">01</div>
+      <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/></svg>
+      <h4>Start server</h4><p>Run <code>python app.py</code> from the project root.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">02</div>
+      <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <h4>Select model</h4><p>Navigate to facial webcam or text analysis.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">03</div>
+      <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <h4>Live results</h4><p>Predictions stream in real time with confidence scores.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">04</div>
+      <svg class="step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <h4>View history</h4><p>Every detection is saved to the database automatically.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+<div class="site-footer">Emotion AI Buddy 2026</div>
+</div><!-- #app -->
+
+<script>
+/* ── CANVAS ── */
+const cv=document.getElementById("cv"),cx=cv.getContext("2d");
+let W,H,pts=[],T=0;
+function rsz(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
+function ipts(){pts=[];for(let i=0;i<50;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.14,vy:(Math.random()-.5)*.14,r:Math.random()*.8+.3,a:Math.random()*.35+.1});}
+function dbg(){cx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fillStyle=`rgba(201,168,76,${p.a*.28})`;cx.fill();});pts.forEach((a,i)=>pts.slice(i+1,i+5).forEach(b=>{const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<150){cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.strokeStyle=`rgba(201,168,76,${(1-d/150)*.045})`;cx.lineWidth=.5;cx.stroke();}}));T+=.005;requestAnimationFrame(dbg);}
+window.addEventListener("resize",()=>{rsz();ipts();});rsz();ipts();dbg();
+
+/* ── SPLASH ── */
+document.querySelectorAll(".spe").forEach((el,i)=>setTimeout(()=>{el.classList.add("p");setTimeout(()=>el.classList.add("b"),660);},i*160+200));
+setTimeout(()=>{
+  document.getElementById("splash").classList.add("out");
+  setTimeout(()=>document.getElementById("splash").style.display="none",800);
+  document.getElementById("app").classList.add("show");
+  const w=document.getElementById("wipe");w.classList.add("in");
+  setTimeout(()=>w.classList.remove("in","out"),500);
+  /* stagger the emotion cards in */
+  setTimeout(()=>{
+    document.querySelectorAll(".emo-card").forEach((c,i)=>{
+      setTimeout(()=>c.classList.add("show"), i*80);
+    });
+  }, 300);
+},4300);
+
+/* ── PAGE TRANSITION ── */
+function goto(url){const w=document.getElementById("wipe");w.classList.remove("in");w.classList.add("out");setTimeout(()=>window.location.href=url,440);}
+window.addEventListener("load",()=>{const w=document.getElementById("wipe");w.classList.add("in");setTimeout(()=>w.classList.remove("in","out"),500);});
+
+/* ── WHEEL ── */
+const emotions=[
+  {e:"😠",n:"Angry"  ,c:"#c0443a"},
+  {e:"🤢",n:"Disgust",c:"#4a9e6a"},
+  {e:"😨",n:"Fear"   ,c:"#8855cc"},
+  {e:"😄",n:"Happy"  ,c:"#c9a84c"},
+  {e:"😐",n:"Neutral",c:"#6a7090"},
+  {e:"😢",n:"Sad"    ,c:"#4070aa"},
+  {e:"😲",n:"Surprise",c:"#b87040"},
+];
+const orbitEl=document.getElementById("wheelOrbit");
+const R=152;
+emotions.forEach((d,i)=>{
+  const angle=(i/emotions.length)*2*Math.PI - Math.PI/2;
+  const x=Math.cos(angle)*R, y=Math.sin(angle)*R;
+  const item=document.createElement("div");
+  item.className="wi";
+  item.style.cssText=`transform:translate(${x}px,${y}px)`;
+  item.innerHTML=`<div class="wi-inner"><span class="wi-icon">${d.e}</span><span class="wi-name" style="color:${d.c}">${d.n}</span></div>`;
+  orbitEl.appendChild(item);
+  item.querySelector(".wi-inner").addEventListener("mouseenter",()=>{
+    document.getElementById("wcEmoji").textContent=d.e;
+    document.getElementById("wcName").textContent=d.n;
+    document.getElementById("wcName").style.color=d.c;
+  });
+});
+let wci=0;
+setInterval(()=>{
+  wci=(wci+1)%emotions.length;
+  const d=emotions[wci];
+  document.getElementById("wcEmoji").textContent=d.e;
+  document.getElementById("wcName").textContent=d.n;
+  document.getElementById("wcName").style.color=d.c;
+},2600);
+
+/* ── TYPEWRITER ── */
+const words=["feel","express","show","carry","reveal"];
+let wi=0,ci=0,del=false;const twEl=document.getElementById("tw");
+function type(){const w=words[wi];if(!del){twEl.textContent=w.slice(0,++ci);if(ci===w.length){del=true;setTimeout(type,1800);return;}}else{twEl.textContent=w.slice(0,--ci);if(ci===0){del=false;wi=(wi+1)%words.length;}}setTimeout(type,del?55:95);}
+setTimeout(type,1000);
+
+/* ── COUNT UP ── */
+function countUp(el,t){let s=null;(function step(ts){if(!s)s=ts;const p=Math.min((ts-s)/1300,1),e=1-Math.pow(1-p,4);el.textContent=Math.floor(e*t);if(p<1)requestAnimationFrame(step);else el.textContent=t;})(performance.now());}
+
+/* ── SCROLL REVEAL ── */
+let counted=false;
+const io=new IntersectionObserver(entries=>entries.forEach(e=>{
+  if(e.isIntersecting){
+    e.target.classList.add("on");
+    if(!counted&&e.target.classList.contains("stats-band")){counted=true;e.target.querySelectorAll(".stat-n").forEach(el=>countUp(el,+el.dataset.t));}
+  }
+}),{threshold:.1});
+document.querySelectorAll(".rv").forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>History · Emotion AI Buddy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;--bg2:#12151c;--surface:#1a1d26;--surface2:#20242f;
+  --border:#2a2e3d;--border2:#323647;
+  --text:#e8eaf0;--text2:#9ea3b5;--text3:#636880;
+  --gold:#c9a84c;--gold2:#e8c96a;
+}
+html,body{min-height:100vh;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:2000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center}
+#splash.out{animation:spFade .8s ease forwards;pointer-events:none}
+@keyframes spFade{to{opacity:0}}
+.sp-row{display:flex;gap:44px;margin-bottom:52px;align-items:flex-end}
+.spe{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transform:translateY(50px) scale(.55);filter:blur(8px)}
+.spe.p{animation:ePop .58s cubic-bezier(.34,1.56,.64,1) forwards}
+.spe.b{animation:eBob 3.4s ease-in-out infinite}
+@keyframes ePop{to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes eBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.spe-icon{font-size:2.8rem;line-height:1}
+.spe-label{font-size:.55rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}
+.sp-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:800;color:var(--text);letter-spacing:-.4px;opacity:0;animation:fadeUp .7s ease 1.2s forwards;text-align:center}
+.sp-title span{color:var(--gold)}
+.sp-sub{font-size:.88rem;color:var(--text3);margin-top:10px;opacity:0;animation:fadeUp .6s ease 1.7s forwards}
+.sp-prog{margin-top:40px;width:180px;height:1px;background:var(--border2);border-radius:999px;overflow:hidden;opacity:0;animation:fadeIn .4s ease 2.1s forwards}
+.sp-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:bFill 1.2s ease 2.2s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes bFill{to{width:100%}}
+
+/* WIPE */
+#wipe{position:fixed;inset:0;z-index:1500;background:var(--surface);transform:scaleY(1);transform-origin:top;animation:wipeIn .5s cubic-bezier(.7,0,.3,1) .05s forwards;pointer-events:none}
+@keyframes wipeIn{to{transform:scaleY(0)}}
+#wipeOut{position:fixed;inset:0;z-index:1500;background:var(--surface);transform:scaleY(0);transform-origin:bottom;pointer-events:none}
+#wipeOut.go{animation:wipeOut .45s cubic-bezier(.7,0,.3,1) forwards}
+@keyframes wipeOut{to{transform:scaleY(1)}}
+.page-wrap{opacity:0;transform:translateY(14px);animation:pIn .65s cubic-bezier(.16,1,.3,1) .1s forwards}
+@keyframes pIn{to{opacity:1;transform:none}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(13,15,20,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer;color:var(--text)}
+.logo-mark{width:34px;height:34px;border-radius:9px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo-name{font-size:.95rem;font-weight:700}
+.logo-name span{color:var(--gold)}
+.nav-links{display:flex;gap:2px}
+.nl{font-size:.82rem;font-weight:500;color:var(--text2);padding:7px 16px;border-radius:8px;transition:color .2s,background .2s;cursor:pointer;border:none;background:none}
+.nl:hover{color:var(--text);background:var(--surface2)}
+.nl.active{color:var(--text);background:var(--surface2)}
+
+/* PAGE */
+.page{position:relative;z-index:1;min-height:100vh;padding:96px 48px 60px;max-width:1100px;margin:0 auto}
+
+/* PAGE HEADER */
+.ph{margin-bottom:2.4rem;animation:fadeUp .7s ease .2s both}
+.back{display:inline-flex;align-items:center;gap:7px;color:var(--text3);font-size:.76rem;font-weight:600;padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all .2s;margin-bottom:1.2rem;border:none}
+.back:hover{color:var(--text);background:var(--surface2)}
+.ph h1{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,3.5vw,2.5rem);font-weight:800;letter-spacing:-.4px;margin-bottom:.5rem}
+.ph p{font-size:.88rem;color:var(--text2);line-height:1.7}
+
+/* CONTROLS */
+.controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:1.4rem;animation:fadeUp .7s ease .35s both}
+.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:3px}
+.tab{font-size:.8rem;font-weight:600;color:var(--text3);padding:7px 20px;border-radius:7px;cursor:pointer;transition:all .2s;border:none;background:none}
+.tab.active{background:var(--surface2);color:var(--text);border:1px solid var(--border2)}
+.tab:hover:not(.active){color:var(--text2)}
+.ctrl-right{display:flex;align-items:center;gap:10px}
+.rec-count{font-size:.76rem;color:var(--text3)}
+.btn-refresh{font-size:.76rem;font-weight:600;color:var(--gold);padding:7px 14px;border-radius:7px;border:1px solid rgba(201,168,76,.25);background:rgba(201,168,76,.07);cursor:pointer;transition:all .2s}
+.btn-refresh:hover{background:rgba(201,168,76,.14)}
+.btn-clear{font-size:.76rem;font-weight:600;color:var(--text3);padding:7px 14px;border-radius:7px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all .2s}
+.btn-clear:hover{color:#c0443a;border-color:rgba(192,68,58,.35);background:rgba(192,68,58,.07)}
+
+/* TABLE CARD */
+.tcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;animation:fadeUp .7s ease .45s both}
+.tcard-head{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.th-title{font-size:.68rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em}
+.auto-badge{display:flex;align-items:center;gap:6px;font-size:.65rem;font-weight:600;color:var(--text3)}
+.auto-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:adot 2s infinite}
+@keyframes adot{0%,100%{opacity:1}50%{opacity:.3}}
+
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--surface2);border-bottom:1px solid var(--border)}
+th{padding:11px 18px;text-align:left;font-size:.61rem;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+@keyframes rowIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+td{padding:12px 18px;font-size:.8rem;color:var(--text2);vertical-align:middle}
+.td-id{color:var(--text3);font-size:.7rem}
+.em-cell{display:flex;align-items:center;gap:9px}
+.em-cell-icon{font-size:1.05rem}
+.em-cell-name{font-weight:600;color:var(--text);text-transform:capitalize}
+.conf-cell{display:flex;align-items:center;gap:10px}
+.conf-val{font-size:.76rem;font-weight:700;color:var(--gold);min-width:38px}
+.conf-track{width:64px;height:2px;background:var(--border2);border-radius:999px;overflow:hidden}
+.conf-fill{height:100%;background:var(--gold);border-radius:999px;transition:width .5s ease}
+.txt-cell{max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem}
+.td-time{font-size:.7rem;color:var(--text3);white-space:nowrap}
+
+/* STATES */
+.state-box{padding:56px 20px;text-align:center}
+.state-icon{font-size:2rem;margin-bottom:12px;display:block}
+.state-title{font-size:.9rem;font-weight:600;color:var(--text2);margin-bottom:6px}
+.state-sub{font-size:.78rem;color:var(--text3);line-height:1.7}
+.spinner{display:inline-block;width:22px;height:22px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+footer{font-size:.72rem;color:var(--text3);text-align:center;padding:20px 0;border-top:1px solid var(--border);margin-top:2rem;letter-spacing:.06em}
+
+@media(max-width:700px){.page{padding:96px 20px 60px}.controls{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-row">
+    <div class="spe"><span class="spe-icon">📊</span><span class="spe-label">Stats</span></div>
+    <div class="spe" style="margin-bottom:14px"><span class="spe-icon" style="font-size:3.2rem">🗂️</span><span class="spe-label">History</span></div>
+    <div class="spe"><span class="spe-icon">📝</span><span class="spe-label">Records</span></div>
+  </div>
+  <div class="sp-title">Emotion AI <span>Buddy</span></div>
+  <div class="sp-sub">Detection History</div>
+  <div class="sp-prog"><div class="sp-fill"></div></div>
+</div>
+
+<div id="wipe"></div>
+<div id="wipeOut"></div>
+
+<div class="page-wrap">
+<nav>
+  <div class="logo" onclick="goto('http://127.0.0.1:5000/')">
+    <div class="logo-mark">🧠</div>
+    <span class="logo-name">Emotion <span>AI</span> Buddy</span>
+  </div>
+  <div class="nav-links">
+    <span class="nl" onclick="goto('http://127.0.0.1:5000/')">Home</span>
+    <span class="nl" onclick="goto('http://127.0.0.1:5000/facial.html')">Facial Detection</span>
+    <span class="nl" onclick="goto('http://127.0.0.1:5000/text.html')">Text Detection</span>
+    <span class="nl active">History</span>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="ph">
+    <button class="back" onclick="goto('http://127.0.0.1:5000/')">← Back to Home</button>
+    <h1>Detection History</h1>
+    <p>All past emotion detections saved automatically to the database. Showing the latest 50 records per model.</p>
+  </div>
+
+  <div class="controls">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('facial')">🎭 Facial Detections</button>
+      <button class="tab" onclick="switchTab('text')">💬 Text Detections</button>
+    </div>
+    <div class="ctrl-right">
+      <span class="rec-count" id="recCount">—</span>
+      <button class="btn-refresh" onclick="loadData()">↻ Refresh</button>
+      <button class="btn-clear" onclick="clearHistory()">Clear</button>
+    </div>
+  </div>
+
+  <div class="tcard">
+    <div class="tcard-head">
+      <span class="th-title" id="tableTitle">Facial Detection Records</span>
+      <span class="auto-badge"><span class="auto-dot"></span>Auto-refresh every 6s</span>
+    </div>
+    <div id="tableBody">
+      <div class="state-box"><div class="spinner"></div><div class="state-title">Loading…</div></div>
+    </div>
+  </div>
+
+  <footer>Emotion AI Buddy 2026</footer>
+</div>
+</div>
+
+<script>
+/* SPLASH */
+document.querySelectorAll(".spe").forEach((el,i)=>setTimeout(()=>{el.classList.add("p");setTimeout(()=>el.classList.add("b"),660);},i*200+200));
+setTimeout(()=>{document.getElementById("splash").classList.add("out");setTimeout(()=>document.getElementById("splash").style.display="none",800);},3200);
+
+function goto(url){document.getElementById("wipeOut").classList.add("go");setTimeout(()=>window.location.href=url,440);}
+
+const EMOJI={
+  Angry:"😠",Disgust:"🤢",Fear:"😨",Happy:"😄",Neutral:"😐",Sad:"😢",Surprise:"😲",
+  anger:"😠",disgust:"🤮",fear:"😨",joy:"😂",neutral:"😐",sadness:"😔",shame:"😳",surprise:"😮"
+};
+
+let currentTab="facial";
+
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("active",(i===0&&tab==="facial")||(i===1&&tab==="text")));
+  document.getElementById("tableTitle").textContent=tab==="facial"?"Facial Detection Records":"Text Detection Records";
+  loadData();
+}
+
+async function loadData(){
+  document.getElementById("tableBody").innerHTML='<div class="state-box"><div class="spinner"></div><div class="state-title">Loading records…</div></div>';
+  document.getElementById("recCount").textContent="—";
+  try{
+    const res=await fetch(`/history/${currentTab}`);
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    renderTable(await res.json());
+  }catch(err){
+    document.getElementById("tableBody").innerHTML=`
+      <div class="state-box">
+        <span class="state-icon">⚠️</span>
+        <div class="state-title">Could not load records</div>
+        <div class="state-sub">Make sure the server is running.<br/><code style="color:var(--gold);font-size:.72rem">python app.py</code></div>
+      </div>`;
+  }
+}
+
+function renderTable(data){
+  document.getElementById("recCount").textContent=`${data.length} record${data.length!==1?"s":""}`;
+  if(data.length===0){
+    document.getElementById("tableBody").innerHTML=`
+      <div class="state-box">
+        <span class="state-icon">${currentTab==="facial"?"🎭":"💬"}</span>
+        <div class="state-title">No records yet</div>
+        <div class="state-sub">Start using ${currentTab==="facial"?"facial":"text"} detection and records will appear here automatically.</div>
+      </div>`;
+    return;
+  }
+  let html="<table><thead><tr>";
+  if(currentTab==="facial"){
+    html+=`<th>#</th><th>Emotion</th><th>Confidence</th><th>Timestamp</th></tr></thead><tbody>`;
+    data.forEach((r,i)=>{
+      html+=`<tr style="animation:rowIn .4s ease ${i*.035}s both">
+        <td class="td-id">${r.id}</td>
+        <td><div class="em-cell"><span class="em-cell-icon">${EMOJI[r.emotion]||"❓"}</span><span class="em-cell-name">${r.emotion}</span></div></td>
+        <td><div class="conf-cell"><span class="conf-val">${r.confidence.toFixed(1)}%</span><div class="conf-track"><div class="conf-fill" style="width:${r.confidence}%"></div></div></div></td>
+        <td class="td-time">${r.timestamp}</td>
+      </tr>`;
+    });
+  }else{
+    html+=`<th>#</th><th>Input Text</th><th>Emotion</th><th>Confidence</th><th>Timestamp</th></tr></thead><tbody>`;
+    data.forEach((r,i)=>{
+      const safe=r.input_text.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      html+=`<tr style="animation:rowIn .4s ease ${i*.035}s both">
+        <td class="td-id">${r.id}</td>
+        <td><div class="txt-cell" title="${safe}">${safe}</div></td>
+        <td><div class="em-cell"><span class="em-cell-icon">${EMOJI[r.emotion]||"❓"}</span><span class="em-cell-name">${r.emotion}</span></div></td>
+        <td><div class="conf-cell"><span class="conf-val">${r.confidence.toFixed(1)}%</span><div class="conf-track"><div class="conf-fill" style="width:${r.confidence}%"></div></div></div></td>
+        <td class="td-time">${r.timestamp}</td>
+      </tr>`;
+    });
+  }
+  html+="</tbody></table>";
+  document.getElementById("tableBody").innerHTML=html;
+  /* inject rowIn keyframe once */
+  if(!document.getElementById("rowInStyle")){
+    const s=document.createElement("style");s.id="rowInStyle";
+    s.textContent="@keyframes rowIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}";
+    document.head.appendChild(s);
+  }
+}
+
+async function clearHistory(){
+  if(!confirm(`Clear all ${currentTab} history? This cannot be undone.`)) return;
+  await fetch("/history/clear",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:currentTab})});
+  loadData();
+}
+
+loadData();
+setInterval(loadData,6000);
+</script>
+</body>
+</html>
