@@ -10,7 +10,6 @@ import joblib
 import numpy as np
 import threading
 import time
-import webbrowser
 import sqlite3
 from datetime import datetime
 
@@ -236,6 +235,6 @@ def clear_history():
 
 
 if __name__ == "__main__":
-    threading.Timer(2, lambda: webbrowser.open("http://127.0.0.1:5000")).start()
-    print("\n  Emotion AI → http://127.0.0.1:5000\n")
-    app.run(debug=False, threaded=True, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    print(f"\nEmotion AI running on port {port}\n")
+    app.run(host="0.0.0.0", port=port, debug=False, threaded=True)
