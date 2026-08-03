@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -242,17 +242,17 @@ code{background:var(--surface2);color:var(--gold);padding:1px 6px;border-radius:
 <div id="app">
 
 <nav>
-  <div class="logo" onclick="goto('http://127.0.0.1:5000/')">
+  <div class="logo" onclick="goto('/')">
     <div class="logo-mark">🧠</div>
     <span class="logo-name">Emotion <span>AI</span> Buddy</span>
   </div>
   <div class="nav-links">
-    <span class="nl active" onclick="goto('http://127.0.0.1:5000/')">Home</span>
-    <span class="nl" onclick="goto('http://127.0.0.1:5000/facial.html')">Facial Detection</span>
-    <span class="nl" onclick="goto('http://127.0.0.1:5000/text.html')">Text Detection</span>
-    <span class="nl" onclick="goto('http://127.0.0.1:5000/history.html')">History</span>
+    <span class="nl active" onclick="goto('/')">Home</span>
+    <span class="nl" onclick="goto('/facial.html')">Facial Detection</span>
+    <span class="nl" onclick="goto('/text.html')">Text Detection</span>
+    <span class="nl" onclick="goto('/history.html')">History</span>
   </div>
-  <button class="nav-cta" onclick="goto('http://127.0.0.1:5000/facial.html')">Try Now →</button>
+  <button class="nav-cta" onclick="goto('/facial.html')">Try Now →</button>
 </nav>
 
 <main>
@@ -266,8 +266,8 @@ code{background:var(--surface2);color:var(--gold);padding:1px 6px;border-radius:
     <h1>Detect emotions<br/>humans <em><span class="tw-wrap" id="tw">feel</span></em></h1>
     <p>Professional emotion recognition from live facial expressions and natural language — two powerful models, one seamless platform, running entirely on your machine.</p>
     <div class="hero-btns">
-      <button class="btn-gold" onclick="goto('http://127.0.0.1:5000/facial.html')">🎭 Facial Detection</button>
-      <button class="btn-outline" onclick="goto('http://127.0.0.1:5000/text.html')">💬 Text Detection</button>
+      <button class="btn-gold" onclick="goto('/facial.html')">🎭 Facial Detection</button>
+      <button class="btn-outline" onclick="goto('/text.html')">💬 Text Detection</button>
     </div>
   </div>
 
@@ -303,7 +303,7 @@ code{background:var(--surface2);color:var(--gold);padding:1px 6px;border-radius:
   <div class="sec-title">Two models. One platform.</div>
   <div class="sec-sub">Choose real-time facial analysis or text-based emotion classification — both running locally.</div>
   <div class="model-grid">
-    <div class="mc" onclick="goto('http://127.0.0.1:5000/facial.html')">
+    <div class="mc" onclick="goto('/facial.html')">
       <div class="mc-num">01</div>
       <svg style="width:32px;height:32px;color:var(--gold);margin-bottom:1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7 16 12 23 17V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
       <div class="mc-type">Computer Vision</div>
@@ -312,7 +312,7 @@ code{background:var(--surface2);color:var(--gold);padding:1px 6px;border-radius:
       <div class="pills"><span class="pill">OpenCV</span><span class="pill">Keras</span><span class="pill">CNN</span><span class="pill">30 FPS</span></div>
       <span class="mc-link">Open model →</span>
     </div>
-    <div class="mc" onclick="goto('http://127.0.0.1:5000/text.html')">
+    <div class="mc" onclick="goto('/text.html')">
       <div class="mc-num">02</div>
       <svg style="width:32px;height:32px;color:var(--gold);margin-bottom:1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       <div class="mc-type">Natural Language Processing</div>

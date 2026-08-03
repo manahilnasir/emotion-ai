@@ -16,6 +16,10 @@ history.db
 .DS_Store
 Thumbs.db
 
+# Environment variables
+.env
+*.env
+
 # Jupyter
 .ipynb_checkpoints/
 

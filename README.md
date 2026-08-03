@@ -1,108 +1,207 @@
-# Emotion AI - Face & Text Emotion Detection
+# 🧠 Emotion AI Buddy
 
-Emotion AI is a Flask-based web application that detects emotions from both **facial expressions** and **text input** using machine learning models. The application provides a simple web interface where users can analyze emotions in real time.
+Emotion AI Buddy is a full-stack Flask web application that detects emotions from both **facial expressions** and **text input** using machine learning. The application provides a modern, interactive web interface where users can analyze emotions in real time directly from their browser.
 
-## Features
+---
+
+## ✨ Features
 
 - 😊 Real-time Facial Emotion Detection
 - 💬 Text Emotion Detection
-- 🤖 Machine Learning Models
-- 📷 Webcam Integration using OpenCV
-- 📊 Prediction Confidence Scores
-- 🗂️ Emotion History Storage
-- 🌐 User-friendly Web Interface
+- 🤖 CNN-based Facial Emotion Recognition
+- 📝 Machine Learning-based Text Emotion Classification
+- 📷 Browser Camera Integration (No software installation required)
+- 📊 Confidence Scores for Predictions
+- 📈 Emotion Probability Distribution
+- 🗂️ Facial & Text Emotion History
+- 💾 SQLite Database Storage
+- 🎨 Modern Responsive UI with Animations
+- 🌐 Deployable on Render
 
-## Tech Stack
+---
 
-- Python
+## 🛠️ Tech Stack
+
+### Frontend
+- HTML5
+- CSS3
+- JavaScript
+
+### Backend
 - Flask
-- TensorFlow / Keras
+- Python
+
+### Machine Learning
+- TensorFlow
+- Keras
 - Scikit-learn
 - OpenCV
 - NumPy
 - Joblib
-- SQLite
-- HTML
-- CSS
-- JavaScript
 
-## Project Structure
+### Database
+- SQLite
+
+---
+
+## 📂 Project Structure
 
 ```text
-emotion-ai/
+Emotion-AI-Buddy/
+│
 ├── app.py
 ├── requirements.txt
+├── .gitignore
+├── README.md
+│
+├── website/
+│   ├── index.html
+│   ├── facial.html
+│   ├── text.html
+│   ├── history.html
+│   ├── styles.css
+│   └── assets/
+│
 ├── facial_emotion/
 │   ├── emotion_model.h5
 │   ├── emotion_model.json
 │   └── modeltraining.ipynb
+│
 ├── text_emotion/
 │   ├── text_emotion.pkl
-│   ├── emotion_dataset_raw.csv
-│   └── Text Emotion Detection.ipynb
-├── website/
-├── screenshots/
-├── demo/
-│   └── emotion-ai-demo.mp4
-├── .gitignore
-└── README.md
+│   ├── Text Emotion Detection.ipynb
+│   └── emotion_dataset_raw.csv
+│
+└── screenshots/
 ```
 
-## Getting Started
+---
 
-### 1. Clone the repository
+# 🚀 Getting Started
+
+## 1. Clone the repository
 
 ```bash
 git clone https://github.com/manahilnasir/emotion-ai.git
 ```
 
-### 2. Navigate to the project folder
+---
+
+## 2. Navigate into the project
 
 ```bash
-cd emotion-ai
+cd emotion-ai-buddy
 ```
 
-### 3. Install the required dependencies
+---
+
+## 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Run the application
+---
+
+## 4. Run the application
 
 ```bash
 python app.py
 ```
 
-### 5. Open your browser
+---
 
-Visit:
+## 5. Open in your browser
 
-```text
+```
 http://127.0.0.1:5000
 ```
 
-> Running `python app.py` starts the complete application, including both the Flask backend and the web interface.
+The browser will ask for camera permission when you open the Facial Emotion Detection page.
 
+---
 
-## Demo
+# 🧠 Machine Learning Models
 
-The repository includes a project demonstration video inside the **demo** folder.
+## Facial Emotion Detection
 
-## Future Improvements
+- Convolutional Neural Network (CNN)
+- TensorFlow / Keras
+- Detects:
+  - Angry
+  - Disgust
+  - Fear
+  - Happy
+  - Neutral
+  - Sad
+  - Surprise
 
-- User authentication
-- Cloud deployment
-- More emotion classes
-- REST API integration
-- Improved model accuracy
-- Real-time analytics dashboard
+---
 
-## Author
+## Text Emotion Detection
+
+Scikit-learn based text classification model capable of predicting emotions from user input text.
+
+---
+
+# 📊 Features Included
+
+- Live Facial Emotion Detection
+- Text Emotion Prediction
+- Confidence Percentage
+- Emotion Probability Bars
+- Prediction History
+- Responsive User Interface
+- Browser Camera Support
+- SQLite Database
+
+---
+
+# 🌍 Deployment
+
+The project is designed to run both locally and on cloud platforms such as **Render**.
+
+Facial emotion detection uses the user's browser camera, making the application compatible with cloud deployment without requiring server-side webcam access.
+
+---
+
+# 📸 Screenshots
+
+Add screenshots of:
+
+- Home Page
+- Facial Detection
+- Text Detection
+- History Page
+
+---
+
+# 🎥 Demo
+
+Add a short demonstration video or GIF showcasing both facial and text emotion detection.
+
+---
+
+# 🚀 Future Improvements
+
+- User Authentication
+- Export Emotion History
+- More Emotion Categories
+- Improved CNN Accuracy
+- Dashboard & Analytics
+- REST API Documentation
+
+---
+
+# 👩‍💻 Author
 
 **Manahil Nasir**
 
-BS Computer Science Student  
+Final Year BS Computer Science Student  
 University of Central Punjab (UCP)
 
-GitHub: https://github.com/manahilnasir
+GitHub:
+https://github.com/manahilnasir
+
+LinkedIn:
+https://www.linkedin.com/in/manahilnasir/

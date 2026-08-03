@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -138,21 +138,21 @@ footer{font-size:.72rem;color:var(--text3);text-align:center;padding:20px 0;bord
 
 <div class="page-wrap">
 <nav>
-  <div class="logo" onclick="goto('http://127.0.0.1:5000/')">
+  <div class="logo" onclick="goto('/')">
     <div class="logo-mark">🧠</div>
     <span class="logo-name">Emotion <span>AI</span> Buddy</span>
   </div>
   <div class="nav-links">
-    <span class="nl" onclick="goto('http://127.0.0.1:5000/')">Home</span>
-    <span class="nl" onclick="goto('http://127.0.0.1:5000/facial.html')">Facial Detection</span>
-    <span class="nl" onclick="goto('http://127.0.0.1:5000/text.html')">Text Detection</span>
+    <span class="nl" onclick="goto('/')">Home</span>
+    <span class="nl" onclick="goto('/facial.html')">Facial Detection</span>
+    <span class="nl" onclick="goto('/text.html')">Text Detection</span>
     <span class="nl active">History</span>
   </div>
 </nav>
 
 <div class="page">
   <div class="ph">
-    <button class="back" onclick="goto('http://127.0.0.1:5000/')">← Back to Home</button>
+    <button class="back" onclick="goto('/')">← Back to Home</button>
     <h1>Detection History</h1>
     <p>All past emotion detections saved automatically to the database. Showing the latest 50 records per model.</p>
   </div>
@@ -237,7 +237,7 @@ function renderTable(data){
     html+=`<th>#</th><th>Emotion</th><th>Confidence</th><th>Timestamp</th></tr></thead><tbody>`;
     data.forEach((r,i)=>{
       html+=`<tr style="animation:rowIn .4s ease ${i*.035}s both">
-        <td class="td-id">${r.id}</td>
+        <td class="td-id">${i+1}</td>
         <td><div class="em-cell"><span class="em-cell-icon">${EMOJI[r.emotion]||"❓"}</span><span class="em-cell-name">${r.emotion}</span></div></td>
         <td><div class="conf-cell"><span class="conf-val">${r.confidence.toFixed(1)}%</span><div class="conf-track"><div class="conf-fill" style="width:${r.confidence}%"></div></div></div></td>
         <td class="td-time">${r.timestamp}</td>
@@ -248,7 +248,7 @@ function renderTable(data){
     data.forEach((r,i)=>{
       const safe=r.input_text.replace(/</g,"&lt;").replace(/>/g,"&gt;");
       html+=`<tr style="animation:rowIn .4s ease ${i*.035}s both">
-        <td class="td-id">${r.id}</td>
+        <td class="td-id">${i+1}</td>
         <td><div class="txt-cell" title="${safe}">${safe}</div></td>
         <td><div class="em-cell"><span class="em-cell-icon">${EMOJI[r.emotion]||"❓"}</span><span class="em-cell-name">${r.emotion}</span></div></td>
         <td><div class="conf-cell"><span class="conf-val">${r.confidence.toFixed(1)}%</span><div class="conf-track"><div class="conf-fill" style="width:${r.confidence}%"></div></div></div></td>
