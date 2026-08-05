@@ -167,20 +167,12 @@ Facial emotion detection uses the user's browser camera, making the application 
 
 # 📸 Screenshots
 
-Add screenshots of:
-
-- Home Page
-- Facial Detection
-- Text Detection
-- History Page
-
----
+Pictures of the website are available in the screenshots folder
+https://github.com/manahilnasir/emotion-ai/tree/main/screenshots
 
 # 🎥 Demo
-
-Add a short demonstration video or GIF showcasing both facial and text emotion detection.
-
----
+In demo folder , a video is available
+https://github.com/manahilnasir/emotion-ai/blob/main/demo/emotion-ai-demo.mp4
 
 # 🚀 Future Improvements
 
